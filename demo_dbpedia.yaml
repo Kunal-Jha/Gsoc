@@ -1,0 +1,97 @@
+#Author: Kunal 
+swagger: '2.0'
+info:
+  title: DBpedia Lookup
+  version: '1.0.0'
+  
+  description: DBpedia Lookup is a web service that can be used to look up DBpedia URIs by related keywords. Related means that either the label of a resource matches, or an anchor text that was frequently used in Wikipedia to refer to a specific resource matches (for example the resource http://dbpedia.org/resource/United_States can be looked up by the string "USA"). The results are ranked by the number of inlinks pointing from other Wikipedia pages at a result page.
+ 
+host: lookup.dbpedia.org
+basePath: /api/search.asmx
+schemes:
+  - http
+consumes:
+  - application/json
+  - application/xml
+produces:
+  - application/json
+  - application/xml
+paths:
+  /KeywordSearch:
+    get:
+      description: The Keyword Search API can be used to find related DBpedia resources for a given string. The string may consist of a single or multiple words.
+      operationId: keySearch
+      parameters:
+        - name: QueryString
+          in: query
+          description: a string (list of word(s)) which acts as a label for the query to be found.
+          required: true
+          type: string
+        - name: QueryClass 
+          in: query
+          description:  a DBpedia class from the Ontology that the results should have .
+          required: false
+          type: string
+        - name: maxHits
+          in: query
+          description: Default is 5. The number of results returned of the query fired.
+          default: 5
+          required: false
+          type: integer
+      tags:
+        - Keyword
+      responses:
+        '200':
+          description: DBpedia Lookup currently contains data from DBpedia 3.8. 
+          schema:
+            type: string
+  /PrefixSearch:
+    get:
+      description: The PrefixSearch API can be used to implement autocomplete input boxes. For a given partial keyword like berl the API returns URIs of related DBpedia resources like http://dbpedia.org/resource/Berlin.
+      operationId: autocompleteSearch
+      parameters:
+        - name: QueryString
+          in: query
+          description: a string (list of word(s)) which acts as a label for the query to be found.
+          required: true
+          type: string
+        - name: QueryClass 
+          in: query
+          description:  a DBpedia class from the Ontology that the results should have .
+          required: false
+          type: string
+        - name: maxHits
+          in: query
+          description: Default is 5. The number of results returned of the query fired.
+          default: 5
+          required: false
+          type: integer
+      tags:
+        - Autocomplete/Prefix
+      responses:
+        '200':
+          description: DBpedia Lookup currently contains data from DBpedia 3.8. Resources of redirect
+          
+        
+definitions:
+  Result:
+    type: object
+    properties:
+      uri:
+        type: string
+      description:
+        type: string
+      classes:
+        type: Set[OntologyClass]
+      categories:
+        type: Set[Category]
+      templates: 
+        type: Set[Template]
+      redirects: 
+        type: Set[Redirect]
+      description:
+        type: string
+      refCount: 
+        type: integer
+        
+          
